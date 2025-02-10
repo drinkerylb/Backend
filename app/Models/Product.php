@@ -62,6 +62,11 @@ class Product extends Model
         return $this->hasMany(ProductVariant::class);
     }
 
+    public function homepageSectionItems()
+    {
+        return $this->morphMany(HomepageSectionItem::class, 'itemable');
+    }
+
     public function scopeActive($query)
     {
         return $query->where('is_active', true);

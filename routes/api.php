@@ -19,6 +19,8 @@ use App\Http\Controllers\Api\LanguageController;
 use App\Http\Controllers\Api\MediaController;
 use App\Http\Controllers\Api\MediaCollectionController;
 use App\Http\Controllers\Api\CartController;
+use App\Http\Controllers\Api\BannerController;
+use App\Http\Controllers\Api\HomepageSectionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,6 +40,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 // Public routes
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::apiResource('categories', CategoryController::class);
+Route::get('banners', [BannerController::class, 'index']);
+Route::get('homepage-sections', [HomepageSectionController::class, 'index']);
 
 // Protected routes
 Route::middleware('auth:sanctum')->group(function () {
@@ -54,7 +59,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('products/search', [ProductController::class, 'search']);
     Route::get('products/category/{category}', [ProductController::class, 'byCategory']);
     Route::get('products/tag/{tag}', [ProductController::class, 'byTag']);
-    Route::apiResource('categories', CategoryController::class);
     Route::get('categories/{category}/products', [CategoryController::class, 'products']);
     Route::get('categories/tree', [CategoryController::class, 'tree']);
     Route::apiResource('tags', TagController::class);
@@ -122,4 +126,12 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/coupon', [CartController::class, 'applyCoupon']);
         Route::delete('/coupon', [CartController::class, 'removeCoupon']);
     });
+    Route::apiResource('banners', BannerController::class)->except(['index']);
+    
+    // Homepage Section Management
+    Route::apiResource('homepage-sections', HomepageSectionController::class)->except(['index']);
+    Route::post('homepage-sections/{homepage_section}/items', [HomepageSectionController::class, 'addItem']);
+    Route::delete('homepage-sections/{homepage_section}/items/{item}', [HomepageSectionController::class, 'removeItem']);
+    Route::post('homepage-sections/{homepage_section}/reorder-items', [HomepageSectionController::class, 'reorderItems']);
+    Route::post('homepage-sections/reorder', [HomepageSectionController::class, 'reorderSections']);
 });
